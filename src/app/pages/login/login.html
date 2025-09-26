@@ -1,0 +1,13 @@
+<main>
+    <form [formGroup]="loginForm" (submit)="onSubmit()">
+        <label for="email">E-mail
+            <input type="text" name="email" formControlName="email" placeholder="Digite seu email..">
+        </label>
+
+        <label for="password">Senha
+            <input type="password" name="password" formControlName="password" placeholder="Digite sua senha...">
+        </label>
+
+        <button type="submit">Entrar</button>
+    </form>
+</main>
