@@ -1,0 +1,13 @@
+<main>
+    <h1>Suas Recietas</h1>
+
+    <div class="receitas-container">
+        @for (receita of recipesList; track $index) {
+            <div class="receita">
+                <p><span>{{receita.titulo}}</span></p>
+                <p>{{receita.descricao}}</p>
+                <button (click)="openViewerReceita(receita)">ver receita..</button>
+            </div>
+        }
+    </div>
+</main>
