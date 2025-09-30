@@ -1,13 +1,13 @@
 
     <mat-dialog-content>
         <div class="btns">
-            <button>Editar</button>
+            <button (click)="openDialogEdit()">Editar</button>
             <button (click)="delete(receita.id)">Apagar</button>
         </div>
 
         <h2>{{receita.titulo}}</h2>
 
-        <h3>{{data.receita.descricao}}</h3>
+        <h3>{{receita.descricao}}</h3>
 
         <div class="ingredientes">
             <p>Ingredientes</p>
