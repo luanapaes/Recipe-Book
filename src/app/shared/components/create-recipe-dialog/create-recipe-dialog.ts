@@ -1,23 +1,26 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { ChangeDetectionStrategy, Component, computed, inject, model, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatOption } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { MatDialogActions } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateRecipe } from '../../interfaces/create-recipe';
 import { RecipeService } from '../../services/recipe.service';
 import { AuthService } from '../../services/auth.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MsgSnackBarService } from '../../services/msg-snackbar.service';
 
 @Component({
   selector: 'app-create-recipe-dialog',
   imports: [
     MatDialogActions, MatFormFieldModule, MatChipsModule,
     MatIconModule, MatAutocompleteModule, FormsModule,
-    MatButtonToggleModule, ReactiveFormsModule
+    MatButtonToggleModule, ReactiveFormsModule, MatDialogContent,
+    MatButtonModule, MatDialogClose
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-recipe-dialog.html',
@@ -26,16 +29,17 @@ import { AuthService } from '../../services/auth.service';
 export class CreateRecipeDialog implements OnInit {
   createRecipeForm!: FormGroup;
   recipeService = inject(RecipeService);
-  authService = inject(AuthService)
+  authService = inject(AuthService);
+  sanckBarService = inject(MsgSnackBarService)
 
   ngOnInit(): void {
     this.createRecipeForm = new FormGroup({
-      titulo: new FormControl(''),
-      descricao: new FormControl(''),
-      ingredientes: new FormControl(['']),
-      instrucoes: new FormControl(['']),
-      tempo_preparo_min: new FormControl(1),
-      formato_tempo: new FormControl('min'),
+      titulo: new FormControl('', [Validators.required]),
+      descricao: new FormControl('', [Validators.required]),
+      ingredientes: new FormControl([''], [Validators.required]),
+      instrucoes: new FormControl([''], [Validators.required]),
+      tempo_preparo_min: new FormControl(),
+      formato_tempo: new FormControl(''),
     });
   }
 
@@ -51,64 +55,29 @@ export class CreateRecipeDialog implements OnInit {
       }
 
       this.recipeService.create(newRecipe).subscribe({
-        next: (recipe) => {
-          console.log('Receita criada com sucesso:', recipe);
+        next: () => {
+          this.sanckBarService.openSnackBar("Receita adicionada com sucesso!")
         },
         error: (error) => {
-          console.error('Erro ao criar receita:', error);
+          this.sanckBarService.openSnackBar("Erro ao adicionar receita, insira todas as informações necessárias.")
         }
       });
-      console.log("Nova receita criada:", newRecipe);
+    } else {
+          this.sanckBarService.openSnackBar("Preencha as informações da receita.")
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // INGREDIENTES
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   readonly currentIngrediente = model('');
-  readonly ingredientes = signal(['']);
+  readonly ingredientes = signal(['Açucar']);
   readonly announcer = inject(LiveAnnouncer);
 
   // INSTRUÇÕES DE PREPARO
   readonly separatorKeysC: number[] = [ENTER, COMMA];
   readonly announcerTwo = inject(LiveAnnouncer);
   readonly currentInstrucao = model('');
-  readonly instrucoes = signal(['']);
+  readonly instrucoes = signal(['Levar à geladeira']);
 
 
   // INGREDIENTES
