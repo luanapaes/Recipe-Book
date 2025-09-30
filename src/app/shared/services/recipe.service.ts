@@ -14,4 +14,8 @@ export class RecipeService {
   create(recipe: CreateRecipe) {
     return this.httpClient.post<CreateRecipe>(this.apiUrl, recipe);
   }
+
+  getAll(){
+    return this.httpClient.get(this.apiUrl)
+  }
 }
