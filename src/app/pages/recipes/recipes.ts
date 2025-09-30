@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Recipe } from '../../shared/interfaces/recipe';
 import { MatDialog } from '@angular/material/dialog';
 import { ViewerReceita } from '../../shared/components/viewer-receita/viewer-receita';
+import { CreateRecipeDialog } from '../../shared/components/create-recipe-dialog/create-recipe-dialog';
+import { RecipeService } from '../../shared/services/recipe.service';
 
 @Component({
   selector: 'app-recipes',
@@ -9,39 +11,41 @@ import { ViewerReceita } from '../../shared/components/viewer-receita/viewer-rec
   templateUrl: './recipes.html',
   styleUrl: './recipes.css'
 })
-export class Recipes {
+export class Recipes implements OnInit{
   readonly dialog = inject(MatDialog);
+  recipeService = inject(RecipeService);
 
-  recipesList: Recipe[] = [
-    {
-      id: 1,
-      titulo: "Bolo",
-      descricao: "Bolo de Chocolate",
-      ingredientes: ["300g de Farinha", "4 ovos", "120g de manteiga"],
-      instrucoes: ["Fogo médio", "Assar por 35min", "80°"],
-      tempo_preparo_min: 30,
-      createAt: new Date(2025-9-25),
-      userId: 1,
-      user: "Luana"
-    }, 
-    {
-      id: 2,
-      titulo: "Bolo",
-      descricao: "Bolo de Chocolate",
-      ingredientes: ["300g de Farinha", "4 ovos", "120g de manteiga"],
-      instrucoes: ["Fogo médio", "Assar por 35min", "80°"],
-      tempo_preparo_min: 30,
-      createAt: new Date(2025-9-25),
-      userId: 1,
-      user: "Luana"
-    }, 
-  ];
+  recipesList: Recipe[] = [];
 
+  ngOnInit(): void {
+    this.getAllRecipes()
+  }
 
   openViewerReceita(receita: Recipe) {
-    console.log(receita)
     this.dialog.open(ViewerReceita, {
-      data: {receita}
+      data: { receita }
     });
+  }
+
+  openCreateRecipeDialog(){
+    const dialogRef = this.dialog.open(CreateRecipeDialog);
+
+    dialogRef.afterClosed().subscribe({
+      next: (recipe) => {
+        // adiciona nova receita à lista
+        if(recipe){
+          this.recipesList.push(recipe);
+        }
+      }
+    })
+  }
+
+  getAllRecipes(){
+    // pega as receitas do banco e adiciona à lista
+    this.recipeService.getAll().subscribe({
+      next: (recipes: Recipe[] | any) => {
+        recipes.map((r: Recipe) => this.recipesList.push(r));
+      }
+    })
   }
 }
