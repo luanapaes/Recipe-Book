@@ -1,3 +1,58 @@
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
 main {
+    background-image: url(../../../../public/assets/bannerlogin.jpg);
     background-color: rgb(243, 253, 253);
+    height: 100vh;
+
+
+    form {
+        width: 400px;
+        height: 400px;
+        background-color: #fff;
+        box-shadow: 1px 3px 6px rgb(48, 47, 47);
+        gap: 10px;
+
+
+        label {
+            display: flex;
+            flex-direction: column;
+
+            input {
+                width: 300px;
+                height: 40px;
+                outline: none;
+                border: 1px solid rgb(18, 61, 126);
+                border-radius: 10px;
+                padding: 6px;
+                box-sizing: border-box;
+            }
+        }
+
+        h1 {
+            color: rgb(10, 37, 77);
+        }
+
+        button:enabled {
+            width: 50%;
+            background-color: rgb(18, 61, 126);
+            border: none;
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+            padding: 8px 15px;
+            margin-bottom: 20px;
+
+            cursor: pointer;
+            transition: all .3s ease-in;
+
+            &:hover {
+                background-color: rgb(70, 104, 155);
+            }
+        }
+    }
 }
