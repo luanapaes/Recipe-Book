@@ -1,12 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions, MatDialogClose, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogClose, MAT_DIALOG_DATA, MatDialogContent } from '@angular/material/dialog';
 import { Recipe } from '../../interfaces/recipe';
-import { DatePipe } from '@angular/common';
-
 @Component({
   selector: 'app-viewer-receita',
-  imports: [MatDialogActions, MatDialogClose, MatButtonModule
+  imports: [MatDialogActions, MatDialogClose, MatButtonModule, MatDialogContent
   ],
   templateUrl: './viewer-receita.html',
   styleUrl: './viewer-receita.css'
