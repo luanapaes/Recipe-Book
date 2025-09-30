@@ -23,4 +23,8 @@ export class RecipeService {
   delete(id: number){
     return this.httpClient.delete<Recipe>(`${this.apiUrl}/${id}`);
   }
+
+  edit(id: number, recipe: CreateRecipe){
+    return this.httpClient.patch<Recipe>(`${this.apiUrl}/${id}`, recipe);
+  }
 }
