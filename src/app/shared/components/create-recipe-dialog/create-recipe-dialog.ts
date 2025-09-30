@@ -1,11 +1,11 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { ChangeDetectionStrategy, Component, computed, inject, model, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, model, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatOption } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { MatDialogActions, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateRecipe } from '../../interfaces/create-recipe';
@@ -32,6 +32,8 @@ export class CreateRecipeDialog implements OnInit {
   authService = inject(AuthService);
   sanckBarService = inject(MsgSnackBarService)
 
+  constructor(private dialogRef: MatDialogRef<CreateRecipeDialog>){}
+
   ngOnInit(): void {
     this.createRecipeForm = new FormGroup({
       titulo: new FormControl('', [Validators.required]),
@@ -55,15 +57,16 @@ export class CreateRecipeDialog implements OnInit {
       }
 
       this.recipeService.create(newRecipe).subscribe({
-        next: () => {
+        next: (recipe) => {
+          this.dialogRef.close(recipe)
           this.sanckBarService.openSnackBar("Receita adicionada com sucesso!")
         },
-        error: (error) => {
+        error: () => {
           this.sanckBarService.openSnackBar("Erro ao adicionar receita, insira todas as informações necessárias.")
         }
       });
     } else {
-          this.sanckBarService.openSnackBar("Preencha as informações da receita.")
+      this.sanckBarService.openSnackBar("Preencha as informações da receita.")
     }
   }
 
