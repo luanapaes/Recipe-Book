@@ -5,6 +5,7 @@ import { ViewerReceita } from '../../shared/components/viewer-receita/viewer-rec
 import { CreateRecipeDialog } from '../../shared/components/create-recipe-dialog/create-recipe-dialog';
 import { RecipeService } from '../../shared/services/recipe.service';
 import { MsgSnackBarService } from '../../shared/services/msg-snackbar.service';
+import { NotificationService } from '../../shared/services/notification.service';
 
 @Component({
   selector: 'app-recipes',
@@ -16,11 +17,21 @@ export class Recipes implements OnInit{
   readonly dialog = inject(MatDialog);
   recipeService = inject(RecipeService);
   msgSnackBarService = inject(MsgSnackBarService)
+  notificationService = inject(NotificationService);
 
   recipesList: Recipe[] = [];
 
   ngOnInit(): void {
-    this.getAllRecipes()
+    this.getAllRecipes();
+    
+    this.notificationService.notification$.subscribe((recipe) => {
+      const i = this.recipesList.findIndex(r => r.id == recipe.id);
+
+      this.recipesList[i] = {
+        ...this.recipesList[i],
+        ...recipe
+      }
+    });
   }
 
   openViewerReceita(receita: Recipe) {
@@ -35,7 +46,6 @@ export class Recipes implements OnInit{
         if(indice > -1){
           this.recipesList.splice(indice, 1)
         }
-
       }
     })
   }
@@ -61,4 +71,5 @@ export class Recipes implements OnInit{
       }
     })
   }
+
 }
