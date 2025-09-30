@@ -40,8 +40,8 @@ export class CreateRecipeDialog implements OnInit {
       descricao: new FormControl('', [Validators.required]),
       ingredientes: new FormControl([''], [Validators.required]),
       instrucoes: new FormControl([''], [Validators.required]),
-      tempo_preparo_min: new FormControl(),
-      formato_tempo: new FormControl(''),
+      tempo_preparo_min: new FormControl(1),
+      formato_tempo: new FormControl('min'),
     });
   }
 
