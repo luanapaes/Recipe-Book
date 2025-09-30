@@ -1,32 +1,38 @@
 
-<div>
-    <h2>{{receita.titulo}}</h2>
+    <mat-dialog-content>
+        <div class="btns">
+            <button>Editar</button>
+            <button>Apagar</button>
+        </div>
 
-    <h3>{{data.receita.descricao}}</h3>
+        <h2>{{receita.titulo}}</h2>
 
-    <div class="ingredientes">
-        <p>Ingredientes</p>
-        @for (ingrediente of receita.ingredientes; track $index) {
+        <h3>{{data.receita.descricao}}</h3>
+
+        <div class="ingredientes">
+            <p>Ingredientes</p>
+            @for (ingrediente of receita.ingredientes; track $index) {
             <ul>
                 <li>{{ingrediente}}</li>
             </ul>
-        }
-    </div>
+            }
+        </div>
 
-    <div class="preparo">
-        <p>Modo de Preparo</p>
-        @for (instucao of receita.instrucoes; track $index) {
+        <div class="preparo">
+            <p>Modo de Preparo</p>
+            @for (instucao of receita.instrucoes; track $index) {
             <ul>
                 <li>{{instucao}}</li>
             </ul>
-        }
-    </div>
+            }
+        </div>
 
-    @if (receita.tempo_preparo_min !== null) {
+        @if (receita.tempo_preparo_min !== null) {
         <p>Tempo mínimo de preparo: {{receita.tempo_preparo_min}}min</p>
-    }
-</div>
+        }
+    </mat-dialog-content>
+
 
 <mat-dialog-actions>
-  <button matButton mat-dialog-close>Fechar</button>
+    <button matButton mat-dialog-close class="btn-fechar">Fechar</button>
 </mat-dialog-actions>
