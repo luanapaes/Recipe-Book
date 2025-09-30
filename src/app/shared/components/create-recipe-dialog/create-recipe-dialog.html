@@ -1,0 +1,88 @@
+
+<div class="create-recipe-dialog">
+    <h1 mat-dialog-title>Adicionar Receita</h1>
+
+    <form [formGroup]="createRecipeForm" (ngSubmit)="onSubmit()">
+        <label for="titulo">Título
+            <input type="text" name="titulo" formControlName="titulo" />
+        </label>
+
+        <label for="descricao">Descrição
+            <input type="text" name="descricao" formControlName="descricao"/>
+        </label>
+
+        <mat-form-field class="example-chip-list">
+          <mat-label>Ingredientes</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Selecionar ingredientes">
+            @for (ingrediente of ingredientes(); track $index) {
+              <mat-chip-row (removed)="remove(ingrediente)">
+                  {{ingrediente}}
+                  <button matChipRemove [attr.aria-label]="'remover ' + ingrediente">
+                    <mat-icon>cancelar</mat-icon>
+                  </button>
+              </mat-chip-row>
+            }
+          </mat-chip-grid>
+          <input
+            name="currentIngrediente"
+            placeholder="Novo ingrediente"
+            #ingredientInput
+            [(ngModel)]="currentIngrediente"
+            [matChipInputFor]="chipGrid"
+            [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysC"
+            (matChipInputTokenEnd)="add($event)"
+            formControlName="ingredientes"
+          />
+    
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event); ingredientInput.value = ''">
+         </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="example-chip-list">
+          <mat-label>Instruções</mat-label>
+          <mat-chip-grid #chipGridInstrucoes aria-label="Selecionar instruções">
+            @for (instrucao of instrucoes(); track $index) {
+              <mat-chip-row (removed)="removeInstrucao(instrucao)">
+                  {{instrucao}}
+                  <button matChipRemove [attr.aria-label]="'remover ' + instrucao">
+                    <mat-icon>cancelar</mat-icon>
+                  </button>
+              </mat-chip-row>
+            }
+          </mat-chip-grid>
+          <input
+            name="currentInstrucao"
+            placeholder="Nova instrução"
+            #instrucaoInput
+            [(ngModel)]="currentInstrucao"
+            [matChipInputFor]="chipGridInstrucoes"
+            [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysC"
+            (matChipInputTokenEnd)="addInstrucao($event)"
+            formControlName="instrucoes"
+          />
+    
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedInstrucao($event); instrucaoInput.value = ''">
+         </mat-autocomplete>
+        </mat-form-field>
+
+        <section class="tempo-preparo">
+          <label>Tempo mínimo de preparo
+            <input type="number" min="1" name="tempoPreparo" 
+            formControlName="tempo_preparo_min"/>
+          </label>
+
+          <mat-button-toggle-group formControlName="formato_tempo">
+            <mat-button-toggle value="min">Minutos</mat-button-toggle>
+            <mat-button-toggle value="h">Horas</mat-button-toggle>
+          </mat-button-toggle-group>
+          
+          <p>Tempo mínimo: {{createRecipeForm.value.tempo_preparo_min}}{{createRecipeForm.value.formato_tempo}}</p>
+        </section>
+    </form>
+</div>
+
+<mat-dialog-actions>
+  <button matButton mat-dialog-close type="submit" (click)="onSubmit()">Fechar</button>
+</mat-dialog-actions>
