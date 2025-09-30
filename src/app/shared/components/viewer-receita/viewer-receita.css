@@ -1,15 +1,25 @@
-div{
+div {
     padding: 15px;
 
-    h2{
+    h2 {
         margin: 0;
     }
 
-    .ingredientes, .preparo{
+    .ingredientes,
+    .preparo {
         padding: 0;
 
-        ul{
+        ul {
             padding: 0 20px;
         }
+    }
+}
+
+button {
+    transition: all .5s ease;
+    
+    &:hover {
+        background-color: rgb(187, 187, 187);
+        border-radius: 10px;
     }
 }
