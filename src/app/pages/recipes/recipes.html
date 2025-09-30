@@ -1,6 +1,10 @@
 <main>
     <h1>Suas Recietas</h1>
 
+    <div class="adicionar-receita">
+        <button (click)="openCreateRecipeDialog()">Adicionar receita</button>
+    </div>
+
     <div class="receitas-container">
         @for (receita of recipesList; track $index) {
             <div class="receita">
