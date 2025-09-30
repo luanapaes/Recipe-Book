@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ViewerReceita } from '../../shared/components/viewer-receita/viewer-receita';
 import { CreateRecipeDialog } from '../../shared/components/create-recipe-dialog/create-recipe-dialog';
 import { RecipeService } from '../../shared/services/recipe.service';
+import { MsgSnackBarService } from '../../shared/services/msg-snackbar.service';
 
 @Component({
   selector: 'app-recipes',
@@ -14,6 +15,7 @@ import { RecipeService } from '../../shared/services/recipe.service';
 export class Recipes implements OnInit{
   readonly dialog = inject(MatDialog);
   recipeService = inject(RecipeService);
+  msgSnackBarService = inject(MsgSnackBarService)
 
   recipesList: Recipe[] = [];
 
@@ -22,9 +24,20 @@ export class Recipes implements OnInit{
   }
 
   openViewerReceita(receita: Recipe) {
-    this.dialog.open(ViewerReceita, {
+    const dialogRef = this.dialog.open(ViewerReceita, {
       data: { receita }
     });
+
+    dialogRef.afterClosed().subscribe({
+      next: (idRecipe) => {
+        const indice = this.recipesList.findIndex(recipe => recipe.id === idRecipe)
+
+        if(indice > -1){
+          this.recipesList.splice(indice, 1)
+        }
+
+      }
+    })
   }
 
   openCreateRecipeDialog(){
