@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../shared/services/auth.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MsgSnackbar } from '../../shared/msg-snackbar/msg-snackbar';
+import { MsgSnackBarService } from '../../shared/services/msg-snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -9,6 +14,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 })
 export class Login implements OnInit {
   loginForm!: FormGroup;
+  authService = inject(AuthService);
+  router = inject(Router);
+  snackbarService = inject(MsgSnackBarService)
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -18,6 +26,24 @@ export class Login implements OnInit {
   }
 
   onSubmit(){
-    localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imx1QGdtYWlsLmNvbSIsInN1YiI6MSwiaWF0IjoxNzU4ODkxODk4LCJleHAiOjE3NTg5NzgyOTh9.6Ai9x5-2ma2M_cwPGi3nxmprfJt7SjMDogcmzycCxjs")
+    if(this.loginForm.valid){
+      const login = {
+        email: this.loginForm.value.email,
+        password: this.loginForm.value.password
+      };
+
+      this.authService.login(login.email, login.password).subscribe({
+        next: (response: any) => {
+          localStorage.setItem('token', response.accessToken)
+          this.snackbarService.openSnackBar("Entrando..")
+          setTimeout(() => {
+            this.router.navigate(['recipes'])
+          }, 900)
+        }, 
+        error: (e) => {
+          this.snackbarService.openSnackBar("E-mail ou senha incorretos.")
+        }
+      })
+    }
   }
 }
