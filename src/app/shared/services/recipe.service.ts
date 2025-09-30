@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CreateRecipe } from '../interfaces/create-recipe';
 import { AuthService } from './auth.service';
-import { Usuario } from '../interfaces/usuario.interface';
 
 @Injectable({
   providedIn: 'root'
