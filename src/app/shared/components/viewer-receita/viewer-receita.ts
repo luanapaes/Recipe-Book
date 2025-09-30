@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Inject, OnInit, Output } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MAT_DIALOG_DATA, MatDialogContent, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Recipe } from '../../interfaces/recipe';
