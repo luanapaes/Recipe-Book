@@ -1,59 +1,86 @@
 mat-dialog-content {
+    width: 400px;
     padding: 15px;
 
-    h2 {
-        margin: 0;
-        margin-top: 15px;
-    }
+    .descricao {
+        h2 {
+            margin: 0;
+            margin-top: 15px;
+            color: #01012c;
+        }
 
-    .ingredientes,
-    .preparo {
-        padding: 0;
-
-        ul {
-            padding: 0 20px;
+        P{
+            margin: 0;
+            color: #242447;
         }
     }
 
-    .btns{
+    .ingredientes, .preparo {
+        padding: 0;
+
+        p {
+            text-transform: uppercase;
+            margin-bottom: 0;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0;
+            margin-top: 3px;
+        }
+    }
+
+    .ingredientes{
+        ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+
+            li{
+                border: 1px solid #c9c9c9;
+                border-radius: 5px;
+                padding: 4px;
+                flex: 0 0 calc(33% - 15px);
+                text-align: center;
+
+                transition: all .3s ease-in-out;
+
+                &:hover{
+                    border-color: #242447;
+                }
+            }
+        }
+    }
+
+    .btns {
         display: flex;
         justify-content: end;
         gap: 8px;
         padding: 0;
 
-        button{
+        button {
             background-color: transparent;
             padding: 4px;
             cursor: pointer;
             transition: all .3s ease-in;
-            border-radius: 10px;
+            border: 1px solid #c9c9c9;
 
-            &:nth-child(1){
-                border: 1px solid #010185;
-                color: rgb(1, 1, 116);
-                
-                &:hover{
+            &:nth-child(1) {
+                &:hover {
                     background-color: #bebefc;
                 }
             }
 
-            &:nth-child(2){
-                border: 1px solid rgb(133, 1, 1);
-                color: rgb(116, 1, 1);
-
-                &:hover{
+            &:nth-child(2) {
+                &:hover {
                     background-color: #fcbebe;
                 }
             }
         }
     }
-}
 
-.btn-fechar {
-    transition: all .5s ease;
-    border-radius: 10px;
-    
-    &:hover {
-        background-color: rgb(187, 187, 187);
+    p > span {
+        border-bottom: 1px solid #01012c;
+        color: #01012c;
     }
 }

@@ -1,36 +1,36 @@
+<mat-dialog-content>
+    <div class="btns">
+        <button (click)="openDialogEdit()">Editar</button>
+        <button (click)="delete(receita.id)">Apagar</button>
+    </div>
 
-    <mat-dialog-content>
-        <div class="btns">
-            <button (click)="openDialogEdit()">Editar</button>
-            <button (click)="delete(receita.id)">Apagar</button>
-        </div>
-
+    <div class="descricao">
         <h2>{{receita.titulo}}</h2>
+        <p>{{receita.descricao}}</p>
+    </div>
 
-        <h3>{{receita.descricao}}</h3>
-
-        <div class="ingredientes">
-            <p>Ingredientes</p>
+    <div class="ingredientes">
+        <p>Ingredientes</p>
+        <ul>
             @for (ingrediente of receita.ingredientes; track $index) {
-            <ul>
-                <li>{{ingrediente}}</li>
-            </ul>
+            <li>{{ingrediente}}</li>
             }
-        </div>
+        </ul>
+    </div>
 
-        <div class="preparo">
-            <p>Modo de Preparo</p>
+    <div class="preparo">
+        <p>Modo de Preparo</p>
+        <ul>
             @for (instucao of receita.instrucoes; track $index) {
-            <ul>
-                <li>{{instucao}}</li>
-            </ul>
+            <li>{{instucao}}</li>
             }
-        </div>
+        </ul>
+    </div>
 
-        @if (receita.tempo_preparo_min !== null) {
-        <p>Tempo mínimo de preparo: {{receita.tempo_preparo_min}}min</p>
-        }
-    </mat-dialog-content>
+    @if (receita.tempo_preparo_min !== null) {
+    <p>Tempo mínimo de preparo:  <span>{{receita.tempo_preparo_min}}min</span></p>
+    }
+</mat-dialog-content>
 
 
 <mat-dialog-actions>
