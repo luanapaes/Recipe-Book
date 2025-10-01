@@ -32,9 +32,9 @@ export class EditRecipeDialog {
   sanckBarService = inject(MsgSnackBarService)
   chipsService = inject(ChipsMaterialService)
 
-  constructor(private dialogRef: MatDialogRef<EditRecipeDialog>,
+  constructor(
+    private dialogRef: MatDialogRef<EditRecipeDialog>,
     @Inject(MAT_DIALOG_DATA) public receita: Recipe
-
   ) { }
   editRecipeForm!: FormGroup;
   recipe!: Recipe
@@ -42,10 +42,10 @@ export class EditRecipeDialog {
   ngOnInit(): void {
     this.recipe = this.receita;
     this.editRecipeForm = new FormGroup({
-      titulo: new FormControl(this.receita.titulo, [Validators.required]),
-      descricao: new FormControl(this.receita.descricao, [Validators.required]),
-      ingredientes: new FormControl([this.receita.ingredientes], [Validators.required]),
-      instrucoes: new FormControl([this.receita.instrucoes], [Validators.required]),
+      titulo: new FormControl(this.receita.titulo),
+      descricao: new FormControl(this.receita.descricao),
+      ingredientes: new FormControl([this.receita.ingredientes]),
+      instrucoes: new FormControl([this.receita.instrucoes]),
       tempo_preparo_min: new FormControl(this.receita.tempo_preparo_min ? this.receita.tempo_preparo_min : 1),
       formato_tempo: new FormControl('min'),
     });
