@@ -6,14 +6,15 @@ import { CreateRecipeDialog } from '../../shared/components/create-recipe-dialog
 import { RecipeService } from '../../shared/services/recipe.service';
 import { MsgSnackBarService } from '../../shared/services/msg-snackbar.service';
 import { NotificationService } from '../../shared/services/notification.service';
+import { Header } from "../../shared/components/header/header";
 
 @Component({
   selector: 'app-recipes',
-  imports: [],
+  imports: [Header],
   templateUrl: './recipes.html',
   styleUrl: './recipes.css'
 })
-export class Recipes implements OnInit{
+export class Recipes implements OnInit {
   readonly dialog = inject(MatDialog);
   recipeService = inject(RecipeService);
   msgSnackBarService = inject(MsgSnackBarService)
@@ -23,13 +24,15 @@ export class Recipes implements OnInit{
 
   ngOnInit(): void {
     this.getAllRecipes();
-    
-    this.notificationService.notification$.subscribe((recipe) => {
-      const i = this.recipesList.findIndex(r => r.id == recipe.id);
 
-      this.recipesList[i] = {
-        ...this.recipesList[i],
-        ...recipe
+    this.notificationService.notification$.subscribe((recipe) => {
+      if (recipe) {
+        const i = this.recipesList.findIndex(r => r.id == recipe.id);
+
+        this.recipesList[i] = {
+          ...this.recipesList[i],
+          ...recipe
+        }
       }
     });
   }
@@ -43,27 +46,27 @@ export class Recipes implements OnInit{
       next: (idRecipe) => {
         const indice = this.recipesList.findIndex(recipe => recipe.id === idRecipe)
 
-        if(indice > -1){
+        if (indice > -1) {
           this.recipesList.splice(indice, 1)
         }
       }
     })
   }
 
-  openCreateRecipeDialog(){
+  openCreateRecipeDialog() {
     const dialogRef = this.dialog.open(CreateRecipeDialog);
 
     dialogRef.afterClosed().subscribe({
       next: (recipe) => {
         // adiciona nova receita à lista
-        if(recipe){
+        if (recipe) {
           this.recipesList.push(recipe);
         }
       }
     })
   }
 
-  getAllRecipes(){
+  getAllRecipes() {
     // pega as receitas do banco e adiciona à lista
     this.recipeService.getAll().subscribe({
       next: (recipes: Recipe[] | any) => {
