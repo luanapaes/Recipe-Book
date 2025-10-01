@@ -1,3 +1,4 @@
+<app-header></app-header>
 <main>
     <h1>Suas Recietas</h1>
 
@@ -6,12 +7,16 @@
     </div>
 
     <div class="receitas-container">
-        @for (receita of recipesList; track $index) {
+       @if (recipesList.length > 0) {
+         @for (receita of recipesList; track $index) {
             <div class="receita">
                 <p><span>{{receita.titulo}}</span></p>
                 <p>{{receita.descricao}}</p>
                 <button (click)="openViewerReceita(receita)">ver receita..</button>
             </div>
         }
+       } @else {
+        <p class="default">Não há receitas cadastradas.</p>
+       }
     </div>
 </main>
