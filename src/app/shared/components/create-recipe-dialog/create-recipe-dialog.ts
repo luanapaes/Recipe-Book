@@ -13,6 +13,7 @@ import { RecipeService } from '../../services/recipe.service';
 import { AuthService } from '../../services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MsgSnackBarService } from '../../services/msg-snackbar.service';
+import { ChipsMaterialService } from '../../services/chips-material.service';
 
 @Component({
   selector: 'app-create-recipe-dialog',
@@ -31,8 +32,9 @@ export class CreateRecipeDialog implements OnInit {
   recipeService = inject(RecipeService);
   authService = inject(AuthService);
   sanckBarService = inject(MsgSnackBarService)
+  chipsService = inject(ChipsMaterialService)
 
-  constructor(private dialogRef: MatDialogRef<CreateRecipeDialog>){}
+  constructor(private dialogRef: MatDialogRef<CreateRecipeDialog>) { }
 
   ngOnInit(): void {
     this.createRecipeForm = new FormGroup({
@@ -72,81 +74,47 @@ export class CreateRecipeDialog implements OnInit {
 
   // INGREDIENTES
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  readonly currentIngrediente = model('');
-  readonly ingredientes = signal(['Açucar']);
-  readonly announcer = inject(LiveAnnouncer);
-
-  // INSTRUÇÕES DE PREPARO
   readonly separatorKeysC: number[] = [ENTER, COMMA];
-  readonly announcerTwo = inject(LiveAnnouncer);
-  readonly currentInstrucao = model('');
-  readonly instrucoes = signal(['Levar à geladeira']);
+  currentIngrediente = signal('');
+  currentInstrucao = signal('');
+
+  ingredientes = this.chipsService.chips;
+  instrucoes = signal<string[]>([]);
 
 
-  // INGREDIENTES
-  // METHODS
+  // METHODS - INGREDIENTES
   add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our fruit
-    if (value) {
-      this.ingredientes.update(ingredientes => [...ingredientes, value]);
-    }
-
-    // Clear the input value
-    this.currentIngrediente.set('');
+    this.chipsService.add(event, this.currentIngrediente);
   }
 
-  remove(fruit: string): void {
-    this.ingredientes.update(ingredientes => {
-      const index = ingredientes.indexOf(fruit);
-      if (index < 0) {
-        return ingredientes;
-      }
-
-      ingredientes.splice(index, 1);
-      this.announcer.announce(`Removed ${fruit}`);
-      return [...ingredientes];
-    });
+  remove(ingrediente: string): void {
+    this.chipsService.remove(ingrediente);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.ingredientes.update(ingredientes => [...ingredientes, event.option.viewValue]);
-    this.currentIngrediente.set('');
-    event.option.deselect();
+    this.chipsService.selected(event);
   }
 
-  // INSTRUÇÕES DE PREPARO
-  // METHODS
+  // METHODS - INSTRUÇÕES DE PREPARO
   addInstrucao(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-
     if (value) {
-      this.instrucoes.update(instrucoes => [...instrucoes, value]);
+      this.instrucoes.update(instrs => [...instrs, value]);
     }
-
-    // Clear the input value
     this.currentInstrucao.set('');
   }
 
   removeInstrucao(instrucao: string): void {
-    this.instrucoes.update(inst => {
-      const index = inst.indexOf(instrucao);
-      if (index < 0) {
-        return inst;
-      }
-
-      inst.splice(index, 1);
-      this.announcerTwo.announce(`Removed ${instrucao}`);
-      return [...inst];
-    });
+    this.instrucoes.update(instrs => instrs.filter(i => i !== instrucao));
   }
 
   selectedInstrucao(event: MatAutocompleteSelectedEvent): void {
-    this.instrucoes.update(instrucoes => [...instrucoes, event.option.viewValue]);
+    const value = event.option.viewValue;
+    if (value) {
+      this.instrucoes.update(instrs => [...instrs, value]);
+    }
     this.currentInstrucao.set('');
     event.option.deselect();
   }
-
 }
 

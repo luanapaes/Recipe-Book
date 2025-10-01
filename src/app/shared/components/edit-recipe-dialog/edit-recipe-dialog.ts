@@ -1,11 +1,10 @@
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { Component, Inject, inject, model, signal } from '@angular/core';
+import { Component, Inject, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogContent, MatDialogActions, MatDialogClose, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CreateRecipe } from '../../interfaces/create-recipe';
 import { AuthService } from '../../services/auth.service';
 import { MsgSnackBarService } from '../../services/msg-snackbar.service';
@@ -14,11 +13,12 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Recipe } from '../../interfaces/recipe';
+import { ChipsMaterialService } from '../../services/chips-material.service';
 
 @Component({
   selector: 'app-edit-recipe-dialog',
   imports: [
-    MatDialogTitle, MatDialogContent, MatDialogActions,
+    MatDialogContent, MatDialogActions,
     MatDialogClose, MatButtonModule, MatButtonToggleModule,
     MatIconModule, MatAutocompleteModule, ReactiveFormsModule,
     MatFormFieldModule, MatChipsModule
@@ -30,6 +30,7 @@ export class EditRecipeDialog {
   recipeService = inject(RecipeService);
   authService = inject(AuthService);
   sanckBarService = inject(MsgSnackBarService)
+  chipsService = inject(ChipsMaterialService)
 
   constructor(private dialogRef: MatDialogRef<EditRecipeDialog>,
     @Inject(MAT_DIALOG_DATA) public receita: Recipe
@@ -40,7 +41,6 @@ export class EditRecipeDialog {
 
   ngOnInit(): void {
     this.recipe = this.receita;
-    console.log(this.receita)
     this.editRecipeForm = new FormGroup({
       titulo: new FormControl(this.receita.titulo, [Validators.required]),
       descricao: new FormControl(this.receita.descricao, [Validators.required]),
@@ -62,7 +62,7 @@ export class EditRecipeDialog {
         ingredientes: this.ingredientes(),
         instrucoes: this.instrucoes(),
         tempo_preparo_min:
-        this.editRecipeForm.value.formato_tempo === 'h' ? this.editRecipeForm.value.tempo_preparo_min * 60 : this.editRecipeForm.value.tempo_preparo_min,
+          this.editRecipeForm.value.formato_tempo === 'h' ? this.editRecipeForm.value.tempo_preparo_min * 60 : this.editRecipeForm.value.tempo_preparo_min,
       }
 
       this.recipeService.edit(this.recipe.id, editRecipe).subscribe({
@@ -79,89 +79,55 @@ export class EditRecipeDialog {
     }
   }
 
-  // INGREDIENTES
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  readonly currentIngrediente = model('');
-  readonly ingredientes = signal(['Açucar']);
-  readonly announcer = inject(LiveAnnouncer);
-
-  // INSTRUÇÕES DE PREPARO
   readonly separatorKeysC: number[] = [ENTER, COMMA];
-  readonly announcerTwo = inject(LiveAnnouncer);
-  readonly currentInstrucao = model('');
-  readonly instrucoes = signal(['Levar à geladeira']);
+  currentIngrediente = signal('');
+  currentInstrucao = signal('');
 
+  ingredientes = this.chipsService.chips;
+  instrucoes = signal<string[]>([]);
 
-  // INGREDIENTES
-  // METHODS
+  // METHODS - INGREDIENTES
   add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our fruit
-    if (value) {
-      this.ingredientes.update(ingredientes => [...ingredientes, value]);
-    }
-
-    // Clear the input value
-    this.currentIngrediente.set('');
+    this.chipsService.add(event, this.currentIngrediente);
   }
 
-  remove(fruit: string): void {
-    this.ingredientes.update(ingredientes => {
-      const index = ingredientes.indexOf(fruit);
-      if (index < 0) {
-        return ingredientes;
-      }
-
-      ingredientes.splice(index, 1);
-      this.announcer.announce(`Removed ${fruit}`);
-      return [...ingredientes];
-    });
+  remove(ingrediente: string): void {
+    this.chipsService.remove(ingrediente);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.ingredientes.update(ingredientes => [...ingredientes, event.option.viewValue]);
-    this.currentIngrediente.set('');
-    event.option.deselect();
+    this.chipsService.selected(event);
   }
 
-  // INSTRUÇÕES DE PREPARO
-  // METHODS
+  // METHODS - INSTRUÇÕES DE PREPARO
   addInstrucao(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-
     if (value) {
-      this.instrucoes.update(instrucoes => [...instrucoes, value]);
+      this.instrucoes.update(instrs => [...instrs, value]);
     }
-
-    // Clear the input value
     this.currentInstrucao.set('');
   }
 
   removeInstrucao(instrucao: string): void {
-    this.instrucoes.update(inst => {
-      const index = inst.indexOf(instrucao);
-      if (index < 0) {
-        return inst;
-      }
-
-      inst.splice(index, 1);
-      this.announcerTwo.announce(`Removed ${instrucao}`);
-      return [...inst];
-    });
+    this.instrucoes.update(instrs => instrs.filter(i => i !== instrucao));
   }
 
   selectedInstrucao(event: MatAutocompleteSelectedEvent): void {
-    this.instrucoes.update(instrucoes => [...instrucoes, event.option.viewValue]);
+    const value = event.option.viewValue;
+    if (value) {
+      this.instrucoes.update(instrs => [...instrs, value]);
+    }
     this.currentInstrucao.set('');
     event.option.deselect();
   }
 
+  //carrega os ingredientes/instruções do objeto
   carregarIngredientes() {
-    this.ingredientes.set(this.receita.ingredientes);
+    this.chipsService.chips.set(this.receita.ingredientes);
   }
 
-  carregarIntrucoes(){
+  carregarIntrucoes() {
     this.instrucoes.set(this.receita.instrucoes);
   }
 }
