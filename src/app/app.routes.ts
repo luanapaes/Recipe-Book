@@ -14,5 +14,9 @@ export const routes: Routes = [
         component: Recipes,
         title: "Página Inicial",
         canActivate: [AuthGuard]
+    },
+    {
+        path: '**',
+        component: Login
     }
 ];
