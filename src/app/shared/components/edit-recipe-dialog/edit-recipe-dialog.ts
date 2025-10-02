@@ -1,6 +1,6 @@
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Component, Inject, inject, signal } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -13,7 +13,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Recipe } from '../../interfaces/recipe';
-import { ChipsMaterialService } from '../../services/chips-material.service';
+import { EditChipsMaterialService } from '../../services/edit-chips-material.service';
 
 @Component({
   selector: 'app-edit-recipe-dialog',
@@ -30,7 +30,7 @@ export class EditRecipeDialog {
   recipeService = inject(RecipeService);
   authService = inject(AuthService);
   sanckBarService = inject(MsgSnackBarService)
-  chipsService = inject(ChipsMaterialService)
+  chipsService = inject(EditChipsMaterialService)
 
   constructor(
     private dialogRef: MatDialogRef<EditRecipeDialog>,
@@ -84,47 +84,38 @@ export class EditRecipeDialog {
   currentIngrediente = signal('');
   currentInstrucao = signal('');
 
-  ingredientes = this.chipsService.chips;
-  instrucoes = signal<string[]>([]);
+  ingredientes = this.chipsService.chipsIngrediente;
+  instrucoes = this.chipsService.chipsInstrucao;
 
   // METHODS - INGREDIENTES
   add(event: MatChipInputEvent): void {
-    this.chipsService.add(event, this.currentIngrediente);
+    this.chipsService.addIngrediente(event, this.currentIngrediente);
   }
 
   remove(ingrediente: string): void {
-    this.chipsService.remove(ingrediente);
+    this.chipsService.removeIngrediente(ingrediente);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.chipsService.selected(event);
+    this.chipsService.selectedIngrediente(event);
   }
 
   // METHODS - INSTRUÇÕES DE PREPARO
   addInstrucao(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.instrucoes.update(instrs => [...instrs, value]);
-    }
-    this.currentInstrucao.set('');
+    this.chipsService.addInstrucao(event, this.currentInstrucao)
   }
 
   removeInstrucao(instrucao: string): void {
-    this.instrucoes.update(instrs => instrs.filter(i => i !== instrucao));
+    this.chipsService.removeInstrucao(instrucao)
   }
 
   selectedInstrucao(event: MatAutocompleteSelectedEvent): void {
-    const value = event.option.viewValue;
-    if (value) {
-      this.instrucoes.update(instrs => [...instrs, value]);
-    }
-    this.currentInstrucao.set('');
-    event.option.deselect();
+    this.chipsService.selectedInstrucao(event)
   }
 
   //carrega os ingredientes/instruções do objeto
   carregarIngredientes() {
-    this.chipsService.chips.set(this.receita.ingredientes);
+    this.chipsService.chipsIngrediente.set(this.receita.ingredientes);
   }
 
   carregarIntrucoes() {
