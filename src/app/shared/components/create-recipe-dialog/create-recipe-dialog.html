@@ -8,7 +8,11 @@
       </label>
 
       <label for="descricao">Descrição
-        <input type="text" name="descricao" formControlName="descricao" />
+        <textarea 
+          name="descricao" 
+          formControlName="descricao"
+          maxlength="90"
+        ></textarea>
       </label>
 
       <mat-form-field class="example-chip-list">
