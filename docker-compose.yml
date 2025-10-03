@@ -1,0 +1,10 @@
+services:
+  recipes: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: recipes:v1
+    container_name: recipes
+    restart: on-failure
+    ports:
+      - 8080:80
