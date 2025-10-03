@@ -7,16 +7,18 @@
     </div>
 
     <div class="receitas-container">
-       @if (recipesList.length > 0) {
-         @for (receita of recipesList; track $index) {
-            <div class="receita">
+        @if (recipesList.length > 0) {
+        @for (receita of recipesList; track $index) {
+        <div class="receita">
+            <div>
                 <p><span>{{receita.titulo}}</span></p>
                 <p>{{receita.descricao}}</p>
-                <button (click)="openViewerReceita(receita)">ver receita..</button>
             </div>
+            <button (click)="openViewerReceita(receita)">ver receita..</button>
+        </div>
         }
-       } @else {
+        } @else {
         <p class="default">Não há receitas cadastradas.</p>
-       }
+        }
     </div>
 </main>
