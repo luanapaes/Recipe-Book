@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import * as jwt_decode from 'jwt-decode';
+import { CookieService } from  'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +8,14 @@ import * as jwt_decode from 'jwt-decode';
 export class AuthService {
   urlApi = 'http://localhost:3000/auth';
   httpClient = inject(HttpClient);
+  cookieService = inject(CookieService)
 
   isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+    return typeof window !== 'undefined' && typeof this.cookieService !== 'undefined';
   }
 
   logado() {
-    return this.isBrowser() && localStorage.getItem('token') ? true : false;
+    return this.isBrowser() && this.cookieService.get('token') ? true : false;
   }
 
   login(email: string, password: string) {
@@ -22,6 +23,6 @@ export class AuthService {
   }
 
   getToken(){
-    return localStorage.getItem('token');
+    return this.cookieService.get('token')
   }
 }
