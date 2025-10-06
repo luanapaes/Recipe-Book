@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MsgSnackbar } from '../../shared/msg-snackbar/msg-snackbar';
 import { MsgSnackBarService } from '../../shared/services/msg-snackbar.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class Login implements OnInit {
   authService = inject(AuthService);
   router = inject(Router);
   snackbarService = inject(MsgSnackBarService)
+  cookieService = inject(CookieService)
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -34,7 +36,7 @@ export class Login implements OnInit {
 
       this.authService.login(login.email, login.password).subscribe({
         next: (response: any) => {
-          localStorage.setItem('token', response.accessToken)
+          this.cookieService.set('token', response.accessToken, 1)
           this.snackbarService.openSnackBar("Entrando..")
           setTimeout(() => {
             this.router.navigate(['recipes'])
